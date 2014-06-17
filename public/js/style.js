@@ -1,11 +1,13 @@
 // A $( document ).ready() block.
 $(document).ready(function() {
+    //Website  input tokens  
     var yourRegex = /((?:https?\:\/\/|www\.)(?:[-a-z0-9]+\.)*[-a-z0-9]+.*)/;// url
     $('#website').tagsInput({
         //    width: 'auto',
         pattern: yourRegex // default: false
     });
 
+// deleting client by id
     $('.actiondelete').on('click', function(e) {
 //        console.log(this);
         var rowId = $(this).attr('data-id');
@@ -25,13 +27,24 @@ $(document).ready(function() {
 
     });
 
-    var value = $("#form-field-select-1").val();
-//    console.log(value);
-    makeTable(value);
 
+    var value = $("#form-field-select-1").val();
+    $('.alert').delay(5000).fadeOut(400);
+    makeTable(value);
+    
 
     $("#form-field-select-1").change(function() {
         makeTable(this.value);
+    });
+
+    $('.actiondeletelink').on('click', function(e) {
+//        console.log(this);
+
+        var rowId = $(this).attr('data-id');
+        alert(rowId);
+        $('#modal-table').modal('show');
+
+
     });
 
     $("#datepicker").datepicker({
@@ -63,6 +76,8 @@ $(document).ready(function() {
 
 function makeTable(id) {
     var rowId = id;
+//    $('.alert').show();
+ $("#addbuttonlink").attr("href", "/link/add/" + rowId);
     $.ajax({
         type: 'GET',
         url: '/link/getLinkById/' + rowId,
@@ -70,6 +85,7 @@ function makeTable(id) {
         success: function(response)
         {
 //                    console.log(response.data);
+
             $('.linktable > tr').remove();
             for (cnt in response.data) {
                 console.log(response.data[cnt]);
@@ -77,7 +93,7 @@ function makeTable(id) {
                     <td>' + response.data[cnt].url + '</td><td class="hidden-480 hidden">3,330</td><td class="hidden">Feb 12</td> <td class="hidden-480 hidden">\n\
                    <span class="label label-sm label-warning">Expiring</span></td><td><div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">\n\
                    <a class="blue" href="#"><i class="icon-zoom-in bigger-130"></i></a><a class="green" href="/link/edit/' + response.data[cnt].id + '"><i class="icon-pencil bigger-130"></i></a>\n\
-                    <a class="red" href="/link/delete/' + response.data[cnt].id + '"><i class="icon-trash bigger-130"></i></a></div>\n\
+                    <a href="" class="red" onclick="deletelink(' + response.data[cnt].id + ');" ><i class="icon-trash bigger-130"></i></a></div>\n\
                     <div class="visible-xs visible-sm hidden-md hidden-lg"><div class="inline position-relative"><button class="btn btn-minier btn-yellow dropdown-toggle" data-toggle="dropdown">n\
                    <i class="icon-caret-down icon-only bigger-120"></i></button> <ul class="dropdown-menu dropdown-only-icon dropdown-yellow pull-right dropdown-caret dropdown-close">\n\
                    <li><a href="#" class="tooltip-info" data-rel="tooltip" title="View"><span class="blue"> <i class="icon-zoom-in bigger-120"></i></span></a></li>\n\
@@ -86,13 +102,32 @@ function makeTable(id) {
                     </ul></div></div></td></tr>';
                 $(".linktable").append(mydiv);
             }
-            $("#addbuttonlink").attr("href", "/link/add/" + rowId);
-
+           
+            
+//            $(".actiondeletelink").attr("href", "");
 
 
         }
     });
+}
 
+function deletelink(id) {
+    var rowId = id;
+    $('#modal-table').modal('show');
+    var url = window.location.pathname;
+    var main_id = url.substring(url.lastIndexOf('/') + 1)
+//alert(main_id);
+    $('.delete_link_btn').on('click', function(e) {
+        $.ajax({
+            url: '/link/delete/' + rowId,
+            dataType: 'json',
+            success: function(data)
+            {
+//                    window.location.assign("http://local.zendapp/link/index/" + main_id)
+
+            }
+        });
+    });
 
 }
 

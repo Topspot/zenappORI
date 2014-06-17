@@ -91,11 +91,12 @@
 					
 					<ul class="nav nav-list">
                                             <?php foreach($this->layout()->someVar as $website) {
+                                                
                                                 ?>
 						<li>
                                                     
                                                     
-							<a href="/link/"<?php echo $website->id; ?>>
+							<a href="/link/index/<?php echo $website->id; ?>" >
 								<i class="icon-user"></i>
 								<span class="menu-text"> <?php echo $website->name; ?> </span>
 							</a>
